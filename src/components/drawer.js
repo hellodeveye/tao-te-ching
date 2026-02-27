@@ -22,7 +22,7 @@ export function createDrawer() {
   drawerElement.className = 'drawer';
   drawerElement.setAttribute('role', 'dialog');
   drawerElement.setAttribute('aria-modal', 'true');
-  drawerElement.setAttribute('aria-label', '王弼注解');
+  drawerElement.setAttribute('aria-label', '点击查看注解');
 
   drawerElement.innerHTML = `
     <button class="drawer__close" aria-label="关闭">
@@ -70,6 +70,11 @@ export function openDrawer(chapter) {
   currentChapterId = chapter.id;
   isOpen = true;
 
+  // Dispatch event for edge nav coordination
+  document.dispatchEvent(new CustomEvent('drawer-state-change', {
+    detail: { isOpen: true, chapterId: chapter.id }
+  }));
+
   renderAnnotation(chapter);
 
   drawerElement.classList.add('drawer--open');
@@ -87,6 +92,11 @@ export function closeDrawer() {
   isOpen = false;
   currentChapterId = null;
 
+  // Dispatch event for edge nav coordination
+  document.dispatchEvent(new CustomEvent('drawer-state-change', {
+    detail: { isOpen: false }
+  }));
+
   // Reset any inline transform from dragging
   drawerElement.style.transform = '';
   drawerElement.classList.remove('drawer--open');
@@ -99,18 +109,32 @@ export function closeDrawer() {
 function renderAnnotation(chapter) {
   if (!contentElement || !chapter) return;
 
-  const hasAnnotation = chapter.annotation && chapter.annotation.trim().length > 0;
+  // Support both old format (annotation) and new format (annotations array)
+  let annotations = chapter.annotations || [];
+
+  // If old format exists, convert to new format for backward compatibility
+  if (chapter.annotation && annotations.length === 0) {
+    annotations = [{
+      type: "wangbi",
+      title: "王弼注",
+      author: "王弼",
+      content: chapter.annotation
+    }];
+  }
+
+  const hasAnnotations = annotations.length > 0;
 
   contentElement.innerHTML = `
     <div class="drawer__body">
-      ${hasAnnotation ? `
+      ${hasAnnotations ? annotations.map((annotation, index) => `
+        ${index > 0 ? '<div class="drawer__annotation-divider"></div>' : ''}
         <div class="drawer__annotation">
-          <h3 class="drawer__annotation-title">【王弼注】</h3>
+          <h3 class="drawer__annotation-title">${annotation.title}</h3>
           <div class="drawer__annotation-text">
-            ${formatAnnotation(chapter.annotation)}
+            ${formatAnnotation(annotation.content)}
           </div>
         </div>
-      ` : '<p class="drawer__no-annotation">此章暂无注解</p>'}
+      `).join('') : '<p class="drawer__no-annotation">此章暂无注解</p>'}
     </div>
   `;
 }

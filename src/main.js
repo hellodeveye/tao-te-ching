@@ -2,6 +2,7 @@ import './styles/variables.css'
 import './styles/base.css'
 import './styles/layout.css'
 import './styles/drawer.css'
+import './styles/edge-nav.css'
 import './styles/responsive.css'
 
 import { chapters } from './data/chapters.js'
@@ -10,6 +11,7 @@ import { createChapter, setChapterClickHandler } from './components/chapter.js'
 import { createNavigation } from './components/navigation.js'
 import { initScroll } from './components/scroll.js'
 import { createDrawer, openDrawer } from './components/drawer.js'
+import { initEdgeNav } from './components/edge-nav.js'
 
 const app = document.getElementById('app');
 
@@ -45,3 +47,6 @@ const drawer = createDrawer();
 setChapterClickHandler((chapter) => {
   openDrawer(chapter);
 });
+
+// Initialize mobile edge navigation
+initEdgeNav();

@@ -9,7 +9,7 @@ export function createChapter(chapter) {
     <div class="section__inner">
       <p class="chapter__label">${chapter.title}　·　${chapter.part}</p>
       <div class="chapter__divider"></div>
-      <p class="chapter__text" role="button" tabindex="0" aria-label="点击查看王弼注解">${chapter.text}</p>
+      <p class="chapter__text" role="button" tabindex="0" aria-label="点击查看注解">${chapter.text}</p>
     </div>
   `;
 

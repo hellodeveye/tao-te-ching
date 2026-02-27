@@ -1,0 +1,183 @@
+/* Edge Navigation - Minimal right side chapter index for mobile */
+/* Visual style: transparent, no background, floating numbers only */
+
+.edge-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 150;
+  pointer-events: none;
+}
+
+/* Touch zone on the right edge (28px wide) */
+.edge-nav__touch-zone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 100%;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Index strip - transparent, no background, no border */
+.edge-nav__strip {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 85vh;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+/* Show strip when active */
+.edge-nav--active .edge-nav__strip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Individual chapter numbers - minimal default state */
+.edge-nav__item {
+  font-family: var(--font-nav);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.35;
+  transform: scale(1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  writing-mode: horizontal-tb;
+  padding: 1px 0;
+}
+
+/* Near items - slight emphasis */
+.edge-nav__item--near {
+  opacity: 0.6;
+  transform: scale(1.15);
+}
+
+/* Active item - dramatically larger and more visible */
+.edge-nav__item--active {
+  opacity: 1;
+  color: var(--color-accent);
+  font-weight: 700;
+  transform: scale(1.7);
+}
+
+/* Disabled state (when drawer is open) */
+.edge-nav--disabled .edge-nav__touch-zone {
+  pointer-events: none;
+}
+
+.edge-nav--disabled .edge-nav__strip {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* ============================================
+   Mobile Responsive - Only show on mobile
+   ============================================ */
+
+@media (min-width: 769px) {
+  .edge-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .edge-nav {
+    display: block;
+  }
+
+  /* Hide hamburger menu on mobile - edge nav replaces it */
+  .nav-toggle {
+    display: none !important;
+  }
+
+  /* Adjust section padding since we removed left nav toggle */
+  .section {
+    padding-left: var(--space-md);
+    padding-right: calc(var(--space-md) + 28px);
+  }
+}
+
+@media (max-width: 480px) {
+  .edge-nav__touch-zone {
+    width: 24px;
+  }
+
+  .edge-nav__item {
+    font-size: 9px;
+    padding: 0.5px 0;
+  }
+
+  .edge-nav__item--active {
+    transform: scale(1.6);
+  }
+
+  .edge-nav__item--near {
+    transform: scale(1.1);
+  }
+
+  /* Adjust padding for smaller screens */
+  .section {
+    padding-right: calc(var(--space-md) + 24px);
+  }
+}
+
+@media (max-width: 360px) {
+  .edge-nav__item {
+    font-size: 8px;
+  }
+
+  .edge-nav__item--active {
+    transform: scale(1.5);
+  }
+}
+
+/* ============================================
+   Reduced Motion Support
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-nav__strip {
+    transition: none;
+  }
+
+  .edge-nav__item {
+    transition: none;
+  }
+}
+
+/* ============================================
+   Safe Area Support (notch devices)
+   ============================================ */
+
+@supports (padding-right: env(safe-area-inset-right)) {
+  @media (max-width: 768px) {
+    .edge-nav__touch-zone {
+      width: calc(28px + env(safe-area-inset-right));
+    }
+
+    .edge-nav__strip {
+      right: env(safe-area-inset-right, 4px);
+    }
+
+    .section {
+      padding-right: calc(var(--space-md) + 28px + env(safe-area-inset-right, 0px));
+    }
+  }
+}
