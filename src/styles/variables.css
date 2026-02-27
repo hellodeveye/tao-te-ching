@@ -1,0 +1,28 @@
+:root {
+  /* Colors */
+  --color-bg: #FAF9F5;
+  --color-text: #1F1E1D;
+  --color-text-secondary: #87867F;
+  --color-accent: #8B4513;
+  --color-border: #E5E2DB;
+
+  /* Typography */
+  --font-serif: 'Noto Serif SC', serif;
+  --font-nav: 'Courier Prime', 'Courier New', monospace;
+  --fs-body: clamp(1.25rem, 2vw, 1.75rem);
+  --fs-title: clamp(2.5rem, 5vw, 4.5rem);
+  --fs-chapter-num: clamp(0.875rem, 1.2vw, 1rem);
+  --fs-nav: 0.75rem;
+  --lh-body: 2;
+  --ls-body: 0.08em;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+
+  /* Layout */
+  --nav-width: 36px;
+  --content-max-width: 680px;
+}

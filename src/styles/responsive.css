@@ -1,0 +1,39 @@
+@media (max-width: 768px) {
+  .section {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+
+  .nav {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    background-color: var(--color-bg);
+  }
+
+  .nav--open {
+    transform: translateX(0);
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .title-page__heading {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .chapter__text {
+    font-size: clamp(1rem, 3.5vw, 1.25rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: var(--space-sm);
+  }
+
+  .chapter__text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+}
