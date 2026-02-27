@@ -5,6 +5,11 @@ let contentElement = null;
 let currentChapterId = null;
 let isOpen = false;
 
+// Touch handling state for mobile swipe
+let touchStartY = 0;
+let touchCurrentY = 0;
+let isDragging = false;
+
 export function createDrawer() {
   // Create backdrop
   backdropElement = document.createElement('div');
@@ -40,6 +45,9 @@ export function createDrawer() {
 
   // Keyboard navigation
   document.addEventListener('keydown', handleKeyDown);
+
+  // Touch/swipe handling for mobile bottom sheet
+  setupTouchHandling();
 
   return {
     open: openDrawer,
@@ -79,6 +87,8 @@ export function closeDrawer() {
   isOpen = false;
   currentChapterId = null;
 
+  // Reset any inline transform from dragging
+  drawerElement.style.transform = '';
   drawerElement.classList.remove('drawer--open');
   backdropElement.classList.remove('drawer-backdrop--visible');
 
@@ -121,4 +131,82 @@ function escapeHtml(text) {
 
 export function getCurrentChapterId() {
   return currentChapterId;
+}
+
+// Track touch start time for velocity calculation
+let touchStartTime = 0;
+
+// Touch handling for mobile swipe-to-close
+function setupTouchHandling() {
+  if (!drawerElement) return;
+
+  // Touch start - begin tracking
+  drawerElement.addEventListener('touchstart', (e) => {
+    if (!isOpen) return;
+
+    // Only start drag from the top area or drag handle area
+    const rect = drawerElement.getBoundingClientRect();
+    const touchY = e.touches[0].clientY;
+
+    // Allow dragging from top 60px of drawer (drag handle + margin)
+    if (touchY - rect.top > 60) return;
+
+    touchStartY = touchY;
+    touchCurrentY = touchY;
+    touchStartTime = Date.now();
+    isDragging = true;
+
+    // Disable transition during drag
+    drawerElement.style.transition = 'none';
+  }, { passive: true });
+
+  // Touch move - update position
+  drawerElement.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+
+    touchCurrentY = e.touches[0].clientY;
+    const deltaY = touchCurrentY - touchStartY;
+
+    // Only allow dragging down (positive delta)
+    if (deltaY > 0) {
+      // Apply resistance to make it feel natural
+      const resistance = 0.6;
+      const translateY = deltaY * resistance;
+      drawerElement.style.transform = `translateY(${translateY}px)`;
+    }
+  }, { passive: true });
+
+  // Touch end - determine if should close
+  drawerElement.addEventListener('touchend', () => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    drawerElement.style.transition = '';
+
+    const deltaY = touchCurrentY - touchStartY;
+    const velocity = deltaY / (Date.now() - touchStartTime || 1);
+
+    // Close if dragged down more than 100px or with enough velocity
+    if (deltaY > 100 || (deltaY > 50 && velocity > 0.5)) {
+      closeDrawer();
+    } else {
+      // Snap back open
+      drawerElement.classList.add('drawer--open');
+    }
+
+    touchStartY = 0;
+    touchCurrentY = 0;
+  });
+
+  // Touch cancel - reset state
+  drawerElement.addEventListener('touchcancel', () => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    drawerElement.style.transition = '';
+    drawerElement.classList.add('drawer--open');
+
+    touchStartY = 0;
+    touchCurrentY = 0;
+  });
 }

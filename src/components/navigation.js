@@ -18,6 +18,13 @@ export function createNavigation(app) {
     nav.classList.toggle('nav--open');
   });
 
+  // Close nav when clicking on nav items (mobile)
+  nav.addEventListener('click', (e) => {
+    if (e.target.closest('.nav__item') || e.target.closest('.nav__tool-btn')) {
+      nav.classList.remove('nav--open');
+    }
+  });
+
   // Group labels
   let currentPart = '';
   chapters.forEach((ch) => {

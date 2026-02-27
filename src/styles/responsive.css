@@ -1,5 +1,10 @@
 @media (max-width: 768px) {
   .section {
+    align-items: flex-start;
+    padding-top: calc(15vh + 40px);
+    min-height: auto;
+    height: auto;
+    min-height: 100vh;
     padding-left: var(--space-md);
     padding-right: var(--space-md);
   }
@@ -23,17 +28,17 @@
   }
 
   .chapter__text {
-    font-size: clamp(1rem, 3.5vw, 1.25rem);
+    font-size: clamp(1.125rem, 4vw, 1.375rem);
   }
 }
 
 @media (max-width: 480px) {
   .section {
-    padding: var(--space-sm);
+    padding: calc(15vh + 40px) var(--space-sm) var(--space-sm);
   }
 
   .chapter__text {
-    font-size: 1rem;
+    font-size: 1.125rem;
     line-height: 1.8;
   }
 }
